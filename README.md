@@ -23,6 +23,30 @@ Once done, your click application is ready for completion.
 
 ### Inform your shell
 
+`click_completion` has some functions to produce the code to be executed
+by the shell during the completion, and to permanently install this code
+in a place that is automatically loaded by the shell.
+
+The key functions are:
+
+* `get_code`
+* `install`
+
+An example of usage can be found in [examples/click-completion](examples/click-completion)
+
+## Dependencies
+
+`click-completion` obviously depends on `click`.
+
+The shell currently used can be automatically detected when `psutil` is
+installed. When not installed, the functions that require the shell type
+are raising an exception if the shell type is not passed explicitly.
+
+And of course to make it useful, you'll need to use fish, Bash, Zsh or
+PowerShell.
+
+## How it works
+
 As click, the general way `click_completion` works is through a magic environment
 variable called `_<PROG_NAME>_COMPLETE`, where `<PROG_NAME>` is your application
 executable name in uppercase with dashes replaced by underscores.
@@ -38,8 +62,6 @@ you would need to put into your `~/.config/fish/completions/foo-bar.fish`
 
 From this point onwards, your script will have fish completion enabled.
 
-## Activation Script
-
 The above activation example will always invoke your application on startup.
 This might be slowing down the shell activation time significantly if you have
 many applications. Alternatively, you could also ship a file with the contents
@@ -48,6 +70,7 @@ of that, which is what Git and other systems are doing.
 This can be easily accomplished:
 
     _FOO_BAR_COMPLETE=source-fish foo-bar > ~/.config/fish/completions/foo-bar.fish
+
 
 ## License
 
