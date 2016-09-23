@@ -12,9 +12,6 @@ import click_completion
 
 click_completion.init()
 
-import logging
-LOGGER = logging.getLogger(__name__)
-
 shells = {
     'bash': 'Bourne again shell',
     'fish': 'Friendly interactive shell',
@@ -123,7 +120,7 @@ def install(append, shell, path):
     f.write(get_code(shell))
     f.write("\n")
     f.close()
-    LOGGER.info('%s completion installed in %s' % (shell, path))
+    click.echo('%s completion installed in %s' % (shell, path))
 
 
 if __name__ == "__main__":
