@@ -76,6 +76,18 @@ This can be easily accomplished:
 
 Licensed under the MIT, see LICENSE.
 
+## Contributing
+
+Contributions are all very welcome!
+
+This may be in the form of bug reports, pull requests, …
+
+A few subjects need some attention currently:
+
+* documentation
+* tests
+* argument parsing
+
 
 [fish]: https://fishshell.com
 [Zsh]: http://www.zsh.org
