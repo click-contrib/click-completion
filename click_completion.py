@@ -4,10 +4,13 @@
 from __future__ import print_function, absolute_import
 
 import os
+import platform
 import re
 import sys
 import shlex
+import subprocess
 
+import click
 import six
 
 from click import echo, MultiCommand, Option, Argument, ParamType
@@ -335,7 +338,7 @@ def _shellcomplete(cli, prog_name, complete_var=None):
 
 
 def init():
-    """patch click to support fish completion"""
+    """patch click to support enhanced completion"""
     import click
     click.types.ParamType.complete = param_type_complete
     click.types.Choice.complete = choice_complete
@@ -382,3 +385,88 @@ class DocumentedChoice(ParamType):
 
     def complete(self, ctx, incomplete):
         return [(c, v) for c, v in six.iteritems(self.choices) if startswith(c, incomplete)]
+
+
+def get_code(shell=None, prog_name=None, env_name=None):
+    """Return the specified completion code"""
+    if shell in [None, 'auto']:
+        shell = get_auto_shell()
+    prog_name = prog_name or click.get_current_context().find_root().info_name
+    env_name = env_name or '_%s_COMPLETE' % prog_name.upper().replace('-', '_')
+    if shell == 'fish':
+        return get_fish_completion_script(prog_name, env_name)
+    elif shell == 'bash':
+        return get_bash_completion_script(prog_name, env_name)
+    elif shell == 'zsh':
+        return get_zsh_completion_script(prog_name, env_name)
+    elif shell == 'powershell':
+        return get_powershell_completion_script(prog_name, env_name)
+    else:
+        raise click.ClickException('%s is not supported.' % shell)
+
+
+def get_auto_shell():
+    """Return the shell that is calling this process"""
+    try:
+        import psutil
+        parent = psutil.Process(os.getpid()).parent()
+        if platform.system() == 'Windows':
+            parent = parent.parent() or parent
+        return parent.name().replace('.exe', '')
+    except ImportError:
+        raise click.UsageError("Please explicitly give the shell type or install the psutil package to activate the"
+                               " automatic shell detection.")
+
+
+def install(shell=None, prog_name=None, env_name=None, path=None, append=None):
+    """Install the completion"""
+    prog_name = click.get_current_context().find_root().info_name
+    shell = shell or get_auto_shell()
+    if append is None and path is not None:
+        append = True
+    if append is not None:
+        mode = 'a' if append else 'w'
+    else:
+        mode = None
+
+    if shell == 'fish':
+        path = path or os.path.expanduser('~') + '/.config/fish/completions/%s.fish' % prog_name
+        mode = mode or 'w'
+    elif shell == 'bash':
+        path = path or os.path.expanduser('~') + '/.bash_completion'
+        mode = mode or 'a'
+    elif shell == 'zsh':
+        ohmyzsh = os.path.expanduser('~') + '/.oh-my-zsh'
+        if os.path.exists(ohmyzsh):
+            path = path or ohmyzsh + '/completions/_%s' % prog_name
+            mode = mode or 'w'
+        else:
+            path = path or os.path.expanduser('~') + '/.zshrc'
+            mode = mode or 'a'
+    elif shell == 'powershell':
+        subprocess.check_call(['powershell', 'Set-ExecutionPolicy Unrestricted -Scope CurrentUser'])
+        path = path or subprocess.check_output(['powershell', '-NoProfile', 'echo $profile']).strip() if install else ''
+        mode = mode or 'a'
+    else:
+        raise click.ClickException('%s is not supported.' % shell)
+
+    if append is not None:
+        mode = 'a' if append else 'w'
+    else:
+        mode = mode
+    d = os.path.dirname(path)
+    if not os.path.exists(d):
+        os.makedirs(d)
+    f = open(path, mode)
+    f.write(get_code(shell))
+    f.write("\n")
+    f.close()
+    return shell, path
+
+
+shells = {
+    'bash': 'Bourne again shell',
+    'fish': 'Friendly interactive shell',
+    'zsh': 'Z shell',
+    'powershell': 'Windows PowerShell'
+}
