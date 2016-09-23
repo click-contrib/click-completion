@@ -318,22 +318,40 @@ def _shellcomplete(cli, prog_name, complete_var=None):
     if not complete_instr:
         return
 
-    if complete_instr in ['source', 'source-bash']:
+    if complete_instr == 'source':
+        echo(get_code(prog_name=prog_name, env_name=complete_var))
+    elif complete_instr == 'source-bash':
         echo(get_bash_completion_script(prog_name, complete_var))
-    elif complete_instr in ['complete', 'complete-bash']:
-        do_bash_complete(cli, prog_name)
     elif complete_instr == 'source-fish':
         echo(get_fish_completion_script(prog_name, complete_var))
-    elif complete_instr == 'complete-fish':
-        do_fish_complete(cli, prog_name)
     elif complete_instr == 'source-powershell':
         echo(get_powershell_completion_script(prog_name, complete_var))
-    elif complete_instr == 'complete-powershell':
-        do_powershell_complete(cli, prog_name)
     elif complete_instr == 'source-zsh':
         echo(get_zsh_completion_script(prog_name, complete_var))
+    elif complete_instr in ['complete', 'complete-bash']:
+        # keep 'complete' for bash for backward compatibility
+        do_bash_complete(cli, prog_name)
+    elif complete_instr == 'complete-fish':
+        do_fish_complete(cli, prog_name)
+    elif complete_instr == 'complete-powershell':
+        do_powershell_complete(cli, prog_name)
     elif complete_instr == 'complete-zsh':
         do_zsh_complete(cli, prog_name)
+    elif complete_instr == 'install':
+        shell, path = install(prog_name=prog_name, env_name=complete_var)
+        click.echo('%s completion installed in %s' % (shell, path))
+    elif complete_instr == 'install-bash':
+        shell, path = install(shell='bash', prog_name=prog_name, env_name=complete_var)
+        click.echo('%s completion installed in %s' % (shell, path))
+    elif complete_instr == 'install-fish':
+        shell, path = install(shell='fish', prog_name=prog_name, env_name=complete_var)
+        click.echo('%s completion installed in %s' % (shell, path))
+    elif complete_instr == 'install-zsh':
+        shell, path = install(shell='zsh', prog_name=prog_name, env_name=complete_var)
+        click.echo('%s completion installed in %s' % (shell, path))
+    elif complete_instr == 'install-powershell':
+        shell, path = install(shell='powershell', prog_name=prog_name, env_name=complete_var)
+        click.echo('%s completion installed in %s' % (shell, path))
     sys.exit()
 
 
@@ -420,7 +438,7 @@ def get_auto_shell():
 
 def install(shell=None, prog_name=None, env_name=None, path=None, append=None):
     """Install the completion"""
-    prog_name = click.get_current_context().find_root().info_name
+    prog_name = prog_name or click.get_current_context().find_root().info_name
     shell = shell or get_auto_shell()
     if append is None and path is not None:
         append = True
@@ -458,7 +476,7 @@ def install(shell=None, prog_name=None, env_name=None, path=None, append=None):
     if not os.path.exists(d):
         os.makedirs(d)
     f = open(path, mode)
-    f.write(get_code(shell))
+    f.write(get_code(shell, prog_name, env_name))
     f.write("\n")
     f.close()
     return shell, path
