@@ -20,12 +20,12 @@ complete --command %(script_names)s --arguments "(env %(autocomplete_var)s=compl
 
 ZSH_COMPLETION_SCRIPT = '''
 #compdef %(script_names)s
-%(complete_func)s() {
+_%(script_names)s() {
   eval $(env COMMANDLINE="${words[1,$CURRENT]}" %(autocomplete_var)s=complete-zsh %(script_names)s)
 }
-if [[ "$(basename ${(%%):-%%x})" != "%(complete_func)s" ]]; then
+if [[ "$(basename ${(%%):-%%x})" != "_%(script_names)s" ]]; then
   autoload -U compinit && compinit
-  compdef %(complete_func)s %(script_names)s
+  compdef _%(script_names)s %(script_names)s
 fi
 '''
 

@@ -100,7 +100,7 @@ def install(append, shell, path):
     elif shell == 'zsh':
         ohmyzsh = os.path.expanduser('~') + '/.oh-my-zsh'
         if os.path.exists(ohmyzsh):
-            path = path or ohmyzsh + '/completions/%s' % prog_name
+            path = path or ohmyzsh + '/completions/_%s' % prog_name
             mode = mode or 'w'
         else:
             path = path or os.path.expanduser('~') + '/.zshrc'
