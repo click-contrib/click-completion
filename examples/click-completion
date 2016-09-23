@@ -1,0 +1,130 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+
+from __future__ import print_function, absolute_import
+
+import os
+import platform
+import subprocess
+
+import click
+import click_completion
+
+click_completion.init()
+
+import logging
+LOGGER = logging.getLogger(__name__)
+
+shells = {
+    'bash': 'Bourne again shell',
+    'fish': 'Friendly interactive shell',
+    'zsh': 'Z shell',
+    'powershell': 'Windows PowerShell'
+}
+
+cmd_help = """Shell completion for click-completion
+
+Available shell types:
+
+\b
+  %s
+
+Default type: auto
+""" % "\n  ".join('{:<12} {}'.format(k, shells[k]) for k in sorted(shells.keys()))
+
+
+def get_code(shell):
+    """Return the specified completion code"""
+    prog_name = click.get_current_context().find_root().info_name
+    env_name = '_%s_COMPLETE' % prog_name.upper().replace('-', '_')
+    if shell == 'fish':
+        return click_completion.get_fish_completion_script(prog_name, env_name)
+    elif shell == 'bash':
+        return click_completion.get_bash_completion_script(prog_name, env_name)
+    elif shell == 'zsh':
+        return click_completion.get_zsh_completion_script(prog_name, env_name)
+    elif shell == 'powershell':
+        return click_completion.get_powershell_completion_script(prog_name, env_name)
+    else:
+        raise click.ClickException('%s is not supported.' % shell)
+
+
+def get_auto_shell():
+    """Return the shell that is calling this process"""
+    try:
+        import psutil
+        parent = psutil.Process(os.getpid()).parent()
+        if platform.system() == 'Windows':
+            parent = parent.parent() or parent
+        return parent.name().replace('.exe', '')
+    except ImportError:
+        raise click.UsageError("Please explicitly give the shell type or install the psutil package to activate the"
+                               " automatic shell detection.")
+
+
+@click.group(help=cmd_help)
+def completion():
+    """Shell completion for click-completion"""
+    pass
+
+
+@completion.command()
+@click.argument('shell', required=False, type=click_completion.DocumentedChoice(shells))
+def show(shell):
+    """Show the click-completion completion code"""
+    shell = shell or get_auto_shell()
+    click.echo(get_code(shell))
+
+
+@completion.command()
+@click.option('--append/--overwrite', help="Append the completion code to the file", default=None)
+@click.argument('shell', required=False, type=click_completion.DocumentedChoice(shells))
+@click.argument('path', required=False)
+def install(append, shell, path):
+    """Install the click-completion completion"""
+    prog_name = click.get_current_context().find_root().info_name
+    shell = shell or get_auto_shell()
+    if append is None and path is not None:
+        append = True
+    if append is not None:
+        mode = 'a' if append else 'w'
+    else:
+        mode = None
+
+    if shell == 'fish':
+        path = path or os.path.expanduser('~') + '/.config/fish/completions/%s.fish' % prog_name
+        mode = mode or 'w'
+    elif shell == 'bash':
+        path = path or os.path.expanduser('~') + '/.bash_completion'
+        mode = mode or 'a'
+    elif shell == 'zsh':
+        ohmyzsh = os.path.expanduser('~') + '/.oh-my-zsh'
+        if os.path.exists(ohmyzsh):
+            path = path or ohmyzsh + '/completions/%s' % prog_name
+            mode = mode or 'w'
+        else:
+            path = path or os.path.expanduser('~') + '/.zshrc'
+            mode = mode or 'a'
+    elif shell == 'powershell':
+        subprocess.check_call(['powershell', 'Set-ExecutionPolicy Unrestricted -Scope CurrentUser'])
+        path = path or subprocess.check_output(['powershell', '-NoProfile', 'echo $profile']).strip() if install else ''
+        mode = mode or 'a'
+    else:
+        raise click.ClickException('%s is not supported.' % shell)
+
+    if append is not None:
+        mode = 'a' if append else 'w'
+    else:
+        mode = mode
+    d = os.path.dirname(path)
+    if not os.path.exists(d):
+        os.makedirs(d)
+    f = open(path, mode)
+    f.write(get_code(shell))
+    f.write("\n")
+    f.close()
+    LOGGER.info('%s completion installed in %s' % (shell, path))
+
+
+if __name__ == "__main__":
+  completion()
