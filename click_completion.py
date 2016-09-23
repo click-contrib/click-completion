@@ -55,12 +55,12 @@ function TabExpansion($line, $lastWord) {
 }
 '''
 
-COMPLETION_SCRIPT = '''
+BASH_COMPLETION_SCRIPT = '''
 %(complete_func)s() {
     local IFS=$'\\t'
     COMPREPLY=( $( env COMP_WORDS="${COMP_WORDS[*]}" \\
                    COMP_CWORD=$COMP_CWORD \\
-                   %(autocomplete_var)s=complete $1 ) )
+                   %(autocomplete_var)s=complete-bash $1 ) )
     return 0
 }
 
@@ -72,7 +72,7 @@ _invalid_ident_char_re = re.compile(r'[^a-zA-Z0-9_]')
 
 def get_bash_completion_script(prog_name, complete_var):
     cf_name = _invalid_ident_char_re.sub('', prog_name.replace('-', '_'))
-    return (COMPLETION_SCRIPT % {
+    return (BASH_COMPLETION_SCRIPT % {
         'complete_func': '_%s_completion' % cf_name,
         'script_names': prog_name,
         'autocomplete_var': complete_var,
@@ -318,9 +318,9 @@ def _shellcomplete(cli, prog_name, complete_var=None):
     if not complete_instr:
         return
 
-    if complete_instr == 'source':
+    if complete_instr in ['source', 'source-bash']:
         echo(get_bash_completion_script(prog_name, complete_var))
-    elif complete_instr == 'complete':
+    elif complete_instr in ['complete', 'complete-bash']:
         do_bash_complete(cli, prog_name)
     elif complete_instr == 'source-fish':
         echo(get_fish_completion_script(prog_name, complete_var))
