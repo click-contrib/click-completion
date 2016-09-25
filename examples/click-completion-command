@@ -8,7 +8,7 @@ import click_completion
 
 click_completion.init()
 
-cmd_help = """Shell completion for click-completion
+cmd_help = """Shell completion for click-completion-command
 
 Available shell types:
 
@@ -27,7 +27,7 @@ def completion():
 @completion.command()
 @click.argument('shell', required=False, type=click_completion.DocumentedChoice(click_completion.shells))
 def show(shell):
-    """Show the click-completion completion code"""
+    """Show the click-completion-command completion code"""
     click.echo(click_completion.get_code(shell))
 
 
@@ -36,7 +36,7 @@ def show(shell):
 @click.argument('shell', required=False, type=click_completion.DocumentedChoice(click_completion.shells))
 @click.argument('path', required=False)
 def install(append, shell, path):
-    """Install the click-completion completion"""
+    """Install the click-completion-command completion"""
     shell, path = click_completion.install(shell=shell, path=path, append=append)
     click.echo('%s completion installed in %s' % (shell, path))
 

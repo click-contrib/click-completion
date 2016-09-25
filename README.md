@@ -36,7 +36,8 @@ The key functions are:
 * `get_code`
 * `install`
 
-An example of usage can be found in [examples/click-completion](examples/click-completion)
+An example of usage can be found in [examples/click-completion-command](examples/click-completion-command)
+and in [examples/click-completion-callback](examples/click-completion-callback)
 
 ## Dependencies
 

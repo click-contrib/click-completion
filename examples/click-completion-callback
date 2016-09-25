@@ -1,0 +1,35 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+
+from __future__ import print_function, absolute_import
+
+import click
+import click_completion
+
+click_completion.init()
+
+
+def install_callback(ctx, attr, value):
+    if not value or ctx.resilient_parsing:
+        return value
+    shell, path = click_completion.install()
+    click.echo('%s completion installed in %s' % (shell, path))
+    exit(0)
+
+
+@click.command()
+@click.option('--install', is_flag=True, callback=install_callback, expose_value=False,
+              help="Install completion for the current shell. Make sure to have psutil installed.")
+@click.option('--upper/--lower', default=None, help="Change text to upper or lower case")
+@click.argument('args', nargs=-1)
+def echo(upper, args):
+    """just print the command line arguments"""
+    if upper:
+        args = [arg.upper() for arg in args]
+    elif upper is not None:
+        args = [arg.lower() for arg in args]
+    click.echo(' '.join(args))
+
+
+if __name__ == "__main__":
+    echo()
