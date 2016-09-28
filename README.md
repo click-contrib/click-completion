@@ -52,10 +52,24 @@ PowerShell.
 
 ## Customizing completion
 
+### Application level
+
 `click_complete` has a `startswith` function that can be replaced by a
 custom one in order to customize the completion. Some extra environment
 variable to be used during the completion can be passed to `get_code`
 and `install`. An example is available in [examples/click-completion-command](examples/click-completion-command).
+
+### Parameter type level
+
+The custom parameter type may reimplement the `complete` method in order
+to customize the completion result. The `complete` method takes the
+current context and the incomplete argument to be completed. It can
+return either a list of argument value that match the incomplete
+argument, or a list of tuples `(arg, help)`. This last form is preferred
+because it allows to display the help during the completion for the
+shells that supports it.
+
+An example can be found in the class `DocumentedChoice` in [click_completion.py](click_completion.py).
 
 
 ## How it works
