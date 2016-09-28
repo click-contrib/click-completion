@@ -50,6 +50,14 @@ are raising an exception if the shell type is not passed explicitly.
 And of course to make it useful, you'll need to use fish, Bash, Zsh or
 PowerShell.
 
+## Customizing completion
+
+`click_complete` has a `startswith` function that can be replaced by a
+custom one in order to customize the completion. Some extra environment
+variable to be used during the completion can be passed to `get_code`
+and `install`. An example is available in [examples/click-completion-command](examples/click-completion-command).
+
+
 ## How it works
 
 As click, the general way `click_completion` works is through a magic environment

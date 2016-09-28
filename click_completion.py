@@ -17,90 +17,65 @@ from click import echo, MultiCommand, Option, Argument, ParamType
 
 __version__ = '0.1.0'
 
-FISH_COMPLETION_SCRIPT = '''
-complete --command %(script_names)s --arguments "(env %(autocomplete_var)s=complete-fish COMMANDLINE=(commandline -cp) %(script_names)s)" -f
-'''
 
-ZSH_COMPLETION_SCRIPT = '''
-#compdef %(script_names)s
-_%(script_names)s() {
-  eval $(env COMMANDLINE="${words[1,$CURRENT]}" %(autocomplete_var)s=complete-zsh %(script_names)s)
+FISH_TEMPLATE = 'complete --command {{prog_name}} --arguments "(env {{complete_var}}=complete-fish COMMANDLINE=(commandline -cp){% for k, v in extra_env.iteritems() %} {{k}}={{v}}{% endfor %} {{prog_name}})" -f'
+
+ZSH_TEMPLATE = '''
+#compdef {{prog_name}}
+_{{prog_name}}() {
+  eval $(env COMMANDLINE="${words[1,$CURRENT]}" {{complete_var}}=complete-zsh {% for k, v in extra_env.iteritems() %} {{k}}={{v}}{% endfor %} {{prog_name}})
 }
-if [[ "$(basename ${(%%):-%%x})" != "_%(script_names)s" ]]; then
+if [[ "$(basename ${(%):-%x})" != "_{{prog_name}}" ]]; then
   autoload -U compinit && compinit
-  compdef _%(script_names)s %(script_names)s
+  compdef _{{prog_name}} {{prog_name}}
 fi
 '''
 
 POWERSHELL_COMPLETION_SCRIPT = '''
-if ((Test-Path Function:\TabExpansion) -and -not (Test-Path Function:\%(complete_backup)s)) {
-    Rename-Item Function:\TabExpansion %(complete_backup)s
+if ((Test-Path Function:\TabExpansion) -and -not (Test-Path Function:\{{prog_name}}TabExpansionBackup)) {
+    Rename-Item Function:\TabExpansion {{prog_name}}TabExpansionBackup
 }
 
 function TabExpansion($line, $lastWord) {
     $lastBlock = [regex]::Split($line, '[|;]')[-1].TrimStart()
-    $aliases = @("%(script_names)s") + @(Get-Alias | where { $_.Definition -eq "%(script_names)s" } | select -Exp Name)
+    $aliases = @("{{prog_name}}") + @(Get-Alias | where { $_.Definition -eq "{{prog_name}}" } | select -Exp Name)
     $aliasPattern = "($($aliases -join '|'))"
     if($lastBlock -match "^$aliasPattern ") {
-        $Env:%(autocomplete_var)s = "complete-powershell"
+        $Env:{{complete_var}} = "complete-powershell"
         $Env:COMMANDLINE = "$lastBlock"
-        (%(script_names)s) | ? {$_.trim() -ne "" }
-        Remove-Item Env:%(autocomplete_var)s
+{%- for k, v in extra_env.iteritems() %}
+        $Env:{{k}} = "{{v}}"
+{%- endfor %}
+        ({{prog_name}}) | ? {$_.trim() -ne "" }
+        Remove-Item Env:{{complete_var}}
         Remove-Item Env:COMMANDLINE
+{%- for k in extra_env.keys() %}
+        Remove-Item $Env:{{k}}
+{%- endfor %}
     }
-    elseif (Test-Path Function:\%(complete_backup)s) {
+    elseif (Test-Path Function:\{{prog_name}}TabExpansionBackup) {
         # Fall back on existing tab expansion
-        %(complete_backup)s $line $lastWord
+        {{prog_name}}TabExpansionBackup $line $lastWord
     }
 }
 '''
 
 BASH_COMPLETION_SCRIPT = '''
-%(complete_func)s() {
+_{{prog_name}}_completion() {
     local IFS=$'\\t'
     COMPREPLY=( $( env COMP_WORDS="${COMP_WORDS[*]}" \\
                    COMP_CWORD=$COMP_CWORD \\
-                   %(autocomplete_var)s=complete-bash $1 ) )
+{%- for k, v in extra_env.iteritems() %}
+                   {{k}}={{v}} \\
+{%- endfor %}
+                   {{complete_var}}=complete-bash $1 ) )
     return 0
 }
 
-complete -F %(complete_func)s -o default %(script_names)s
+complete -F _{{prog_name}}_completion -o default {{prog_name}}
 '''
 
 _invalid_ident_char_re = re.compile(r'[^a-zA-Z0-9_]')
-
-
-def get_bash_completion_script(prog_name, complete_var):
-    cf_name = _invalid_ident_char_re.sub('', prog_name.replace('-', '_'))
-    return (BASH_COMPLETION_SCRIPT % {
-        'complete_func': '_%s_completion' % cf_name,
-        'script_names': prog_name,
-        'autocomplete_var': complete_var,
-    }).strip() + ';'
-
-
-def get_fish_completion_script(prog_name, complete_var):
-    return (FISH_COMPLETION_SCRIPT % {
-        'script_names': prog_name,
-        'autocomplete_var': complete_var,
-    }).strip() + ';'
-
-
-def get_zsh_completion_script(prog_name, complete_var):
-    cf_name = _invalid_ident_char_re.sub('', prog_name.replace('-', '_'))
-    return (ZSH_COMPLETION_SCRIPT % {
-        'complete_func': '_%s' % cf_name,
-        'script_names': prog_name,
-        'autocomplete_var': complete_var,
-    }).strip() + ';'
-
-
-def get_powershell_completion_script(prog_name, complete_var):
-    return (POWERSHELL_COMPLETION_SCRIPT % {
-        'script_names': prog_name,
-        'autocomplete_var': complete_var,
-        'complete_backup': prog_name.lower().replace('-', '_') + 'TabExpansionBackup',
-    }).strip() + ';'
 
 
 def resolve_ctx(cli, prog_name, args):
@@ -321,13 +296,13 @@ def _shellcomplete(cli, prog_name, complete_var=None):
     if complete_instr == 'source':
         echo(get_code(prog_name=prog_name, env_name=complete_var))
     elif complete_instr == 'source-bash':
-        echo(get_bash_completion_script(prog_name, complete_var))
+        echo(get_code('bash', prog_name, complete_var))
     elif complete_instr == 'source-fish':
-        echo(get_fish_completion_script(prog_name, complete_var))
+        echo(get_code('fish', prog_name, complete_var))
     elif complete_instr == 'source-powershell':
-        echo(get_powershell_completion_script(prog_name, complete_var))
+        echo(get_code('powershell', prog_name, complete_var))
     elif complete_instr == 'source-zsh':
-        echo(get_zsh_completion_script(prog_name, complete_var))
+        echo(get_code('zsh', prog_name, complete_var))
     elif complete_instr in ['complete', 'complete-bash']:
         # keep 'complete' for bash for backward compatibility
         do_bash_complete(cli, prog_name)
@@ -405,22 +380,27 @@ class DocumentedChoice(ParamType):
         return [(c, v) for c, v in six.iteritems(self.choices) if startswith(c, incomplete)]
 
 
-def get_code(shell=None, prog_name=None, env_name=None):
+def get_code(shell=None, prog_name=None, env_name=None, extra_env=None):
     """Return the specified completion code"""
+    from jinja2 import Template
     if shell in [None, 'auto']:
         shell = get_auto_shell()
     prog_name = prog_name or click.get_current_context().find_root().info_name
     env_name = env_name or '_%s_COMPLETE' % prog_name.upper().replace('-', '_')
+    extra_env = extra_env if extra_env else {}
     if shell == 'fish':
-        return get_fish_completion_script(prog_name, env_name)
+        return Template(FISH_TEMPLATE).render(prog_name=prog_name, complete_var=env_name, extra_env=extra_env)
     elif shell == 'bash':
-        return get_bash_completion_script(prog_name, env_name)
+        return Template(BASH_COMPLETION_SCRIPT).render(prog_name=prog_name, complete_var=env_name, extra_env=extra_env)
     elif shell == 'zsh':
-        return get_zsh_completion_script(prog_name, env_name)
+        return Template(ZSH_TEMPLATE).render(prog_name=prog_name, complete_var=env_name, extra_env=extra_env)
     elif shell == 'powershell':
-        return get_powershell_completion_script(prog_name, env_name)
+        return Template(POWERSHELL_COMPLETION_SCRIPT).render(prog_name=prog_name, complete_var=env_name, extra_env=extra_env)
     else:
         raise click.ClickException('%s is not supported.' % shell)
+
+
+
 
 
 def get_auto_shell():
@@ -436,7 +416,7 @@ def get_auto_shell():
                                " automatic shell detection.")
 
 
-def install(shell=None, prog_name=None, env_name=None, path=None, append=None):
+def install(shell=None, prog_name=None, env_name=None, path=None, append=None, extra_env=None):
     """Install the completion"""
     prog_name = prog_name or click.get_current_context().find_root().info_name
     shell = shell or get_auto_shell()
@@ -476,7 +456,7 @@ def install(shell=None, prog_name=None, env_name=None, path=None, append=None):
     if not os.path.exists(d):
         os.makedirs(d)
     f = open(path, mode)
-    f.write(get_code(shell, prog_name, env_name))
+    f.write(get_code(shell, prog_name, env_name, extra_env))
     f.write("\n")
     f.close()
     return shell, path

@@ -23,6 +23,7 @@ setup(
     py_modules=['click_completion'],
     install_requires=[
         'click',
+        'jinja2',
         'six',
     ],
 )
