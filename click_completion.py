@@ -15,15 +15,15 @@ import six
 
 from click import echo, MultiCommand, Option, Argument, ParamType
 
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 
-FISH_TEMPLATE = 'complete --command {{prog_name}} --arguments "(env {{complete_var}}=complete-fish COMMANDLINE=(commandline -cp){% for k, v in extra_env.iteritems() %} {{k}}={{v}}{% endfor %} {{prog_name}})" -f'
+FISH_TEMPLATE = 'complete --command {{prog_name}} --arguments "(env {{complete_var}}=complete-fish COMMANDLINE=(commandline -cp){% for k, v in extra_env.items() %} {{k}}={{v}}{% endfor %} {{prog_name}})" -f'
 
 ZSH_TEMPLATE = '''
 #compdef {{prog_name}}
 _{{prog_name}}() {
-  eval $(env COMMANDLINE="${words[1,$CURRENT]}" {{complete_var}}=complete-zsh {% for k, v in extra_env.iteritems() %} {{k}}={{v}}{% endfor %} {{prog_name}})
+  eval $(env COMMANDLINE="${words[1,$CURRENT]}" {{complete_var}}=complete-zsh {% for k, v in extra_env.items() %} {{k}}={{v}}{% endfor %} {{prog_name}})
 }
 if [[ "$(basename ${(%):-%x})" != "_{{prog_name}}" ]]; then
   autoload -U compinit && compinit
@@ -43,7 +43,7 @@ function TabExpansion($line, $lastWord) {
     if($lastBlock -match "^$aliasPattern ") {
         $Env:{{complete_var}} = "complete-powershell"
         $Env:COMMANDLINE = "$lastBlock"
-{%- for k, v in extra_env.iteritems() %}
+{%- for k, v in extra_env.items() %}
         $Env:{{k}} = "{{v}}"
 {%- endfor %}
         ({{prog_name}}) | ? {$_.trim() -ne "" }
@@ -65,7 +65,7 @@ _{{prog_name}}_completion() {
     local IFS=$'\\t'
     COMPREPLY=( $( env COMP_WORDS="${COMP_WORDS[*]}" \\
                    COMP_CWORD=$COMP_CWORD \\
-{%- for k, v in extra_env.iteritems() %}
+{%- for k, v in extra_env.items() %}
                    {{k}}={{v}} \\
 {%- endfor %}
                    {{complete_var}}=complete-bash $1 ) )
