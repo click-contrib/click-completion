@@ -15,7 +15,7 @@ import six
 
 from click import echo, MultiCommand, Option, Argument, ParamType
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 
 FISH_TEMPLATE = 'complete --command {{prog_name}} --arguments "(env {{complete_var}}=complete-fish COMMANDLINE=(commandline -cp){% for k, v in extra_env.iteritems() %} {{k}}={{v}}{% endfor %} {{prog_name}})" -f'
