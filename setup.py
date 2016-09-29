@@ -18,7 +18,7 @@ setup(
     description='Fish, Bash, Zsh and PowerShell completion for Click',
     author='Gaëtan Lehmann',
     author_email='gaetan.lehmann@gmail.com',
-    url='https://github.com/glehmann/click-completion',
+    url='https://github.com/click-contrib/click-completion',
     license='MIT',
     packages=find_packages(),
     package_data={'': ['*.j2']},
