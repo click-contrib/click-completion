@@ -69,7 +69,7 @@ argument, or a list of tuples `(arg, help)`. This last form is preferred
 because it allows to display the help during the completion for the
 shells that supports it.
 
-An example can be found in the class `DocumentedChoice` in [click_completion.py](click_completion.py).
+An example can be found in the class `DocumentedChoice` in [click_completion/__init__.py](click_completion/__init__.py).
 
 
 ## How it works
