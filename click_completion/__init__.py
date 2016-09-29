@@ -15,65 +15,7 @@ import six
 
 from click import echo, MultiCommand, Option, Argument, ParamType
 
-__version__ = '0.2.1'
-
-
-FISH_TEMPLATE = 'complete --command {{prog_name}} --arguments "(env {{complete_var}}=complete-fish COMMANDLINE=(commandline -cp){% for k, v in extra_env.items() %} {{k}}={{v}}{% endfor %} {{prog_name}})" -f'
-
-ZSH_TEMPLATE = '''
-#compdef {{prog_name}}
-_{{prog_name}}() {
-  eval $(env COMMANDLINE="${words[1,$CURRENT]}" {{complete_var}}=complete-zsh {% for k, v in extra_env.items() %} {{k}}={{v}}{% endfor %} {{prog_name}})
-}
-if [[ "$(basename ${(%):-%x})" != "_{{prog_name}}" ]]; then
-  autoload -U compinit && compinit
-  compdef _{{prog_name}} {{prog_name}}
-fi
-'''
-
-POWERSHELL_COMPLETION_SCRIPT = '''
-if ((Test-Path Function:\TabExpansion) -and -not (Test-Path Function:\{{prog_name}}TabExpansionBackup)) {
-    Rename-Item Function:\TabExpansion {{prog_name}}TabExpansionBackup
-}
-
-function TabExpansion($line, $lastWord) {
-    $lastBlock = [regex]::Split($line, '[|;]')[-1].TrimStart()
-    $aliases = @("{{prog_name}}") + @(Get-Alias | where { $_.Definition -eq "{{prog_name}}" } | select -Exp Name)
-    $aliasPattern = "($($aliases -join '|'))"
-    if($lastBlock -match "^$aliasPattern ") {
-        $Env:{{complete_var}} = "complete-powershell"
-        $Env:COMMANDLINE = "$lastBlock"
-{%- for k, v in extra_env.items() %}
-        $Env:{{k}} = "{{v}}"
-{%- endfor %}
-        ({{prog_name}}) | ? {$_.trim() -ne "" }
-        Remove-Item Env:{{complete_var}}
-        Remove-Item Env:COMMANDLINE
-{%- for k in extra_env.keys() %}
-        Remove-Item $Env:{{k}}
-{%- endfor %}
-    }
-    elseif (Test-Path Function:\{{prog_name}}TabExpansionBackup) {
-        # Fall back on existing tab expansion
-        {{prog_name}}TabExpansionBackup $line $lastWord
-    }
-}
-'''
-
-BASH_COMPLETION_SCRIPT = '''
-_{{prog_name}}_completion() {
-    local IFS=$'\\t'
-    COMPREPLY=( $( env COMP_WORDS="${COMP_WORDS[*]}" \\
-                   COMP_CWORD=$COMP_CWORD \\
-{%- for k, v in extra_env.items() %}
-                   {{k}}={{v}} \\
-{%- endfor %}
-                   {{complete_var}}=complete-bash $1 ) )
-    return 0
-}
-
-complete -F _{{prog_name}}_completion -o default {{prog_name}}
-'''
+__version__ = '0.3.0'
 
 _invalid_ident_char_re = re.compile(r'[^a-zA-Z0-9_]')
 
@@ -382,25 +324,15 @@ class DocumentedChoice(ParamType):
 
 def get_code(shell=None, prog_name=None, env_name=None, extra_env=None):
     """Return the specified completion code"""
-    from jinja2 import Template
+    from jinja2 import Environment, FileSystemLoader
     if shell in [None, 'auto']:
         shell = get_auto_shell()
     prog_name = prog_name or click.get_current_context().find_root().info_name
     env_name = env_name or '_%s_COMPLETE' % prog_name.upper().replace('-', '_')
     extra_env = extra_env if extra_env else {}
-    if shell == 'fish':
-        return Template(FISH_TEMPLATE).render(prog_name=prog_name, complete_var=env_name, extra_env=extra_env)
-    elif shell == 'bash':
-        return Template(BASH_COMPLETION_SCRIPT).render(prog_name=prog_name, complete_var=env_name, extra_env=extra_env)
-    elif shell == 'zsh':
-        return Template(ZSH_TEMPLATE).render(prog_name=prog_name, complete_var=env_name, extra_env=extra_env)
-    elif shell == 'powershell':
-        return Template(POWERSHELL_COMPLETION_SCRIPT).render(prog_name=prog_name, complete_var=env_name, extra_env=extra_env)
-    else:
-        raise click.ClickException('%s is not supported.' % shell)
-
-
-
+    env = Environment(loader=FileSystemLoader(os.path.dirname(__file__)))
+    template = env.get_template('%s.j2' % shell)
+    return template.render(prog_name=prog_name, complete_var=env_name, extra_env=extra_env)
 
 
 def get_auto_shell():

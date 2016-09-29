@@ -3,10 +3,10 @@
 
 from __future__ import print_function, absolute_import
 
+import click_completion
 import os
 
 import click
-import click_completion
 
 
 def custom_startswith(string, incomplete):

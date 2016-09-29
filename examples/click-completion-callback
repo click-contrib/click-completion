@@ -3,8 +3,9 @@
 
 from __future__ import print_function, absolute_import
 
-import click
 import click_completion
+
+import click
 
 click_completion.init()
 

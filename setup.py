@@ -4,11 +4,11 @@
 import ast
 import re
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 _version_re = re.compile(r'__version__\s+=\s+(.*)')
 
-with open('click_completion.py', 'rb') as f:
+with open('click_completion/__init__.py', 'rb') as f:
     version = str(ast.literal_eval(_version_re.search(
         f.read().decode('utf-8')).group(1)))
 
@@ -20,7 +20,8 @@ setup(
     author_email='gaetan.lehmann@gmail.com',
     url='https://github.com/glehmann/click-completion',
     license='MIT',
-    py_modules=['click_completion'],
+    packages=find_packages(),
+    package_data={'': ['*.j2']},
     install_requires=[
         'click',
         'jinja2',
