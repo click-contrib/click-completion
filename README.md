@@ -86,7 +86,7 @@ activation script which can be trivially activated.
 For instance, to enable fish completion for your foo-bar script, this is what
 you would need to put into your `~/.config/fish/completions/foo-bar.fish`
 
-    eval (_FOO_BAR_COMPLETE=source-fish foo-bar)
+    eval (env _FOO_BAR_COMPLETE=source-fish foo-bar)
 
 From this point onwards, your script will have fish completion enabled.
 
