@@ -163,7 +163,10 @@ def do_zsh_complete(cli, prog_name):
             res.append('"%s"\:"%s"' % (escape(item), escape(help)))
         else:
             res.append('"%s"' % escape(item))
-    echo("_arguments '*: :((%s))'" % '\n'.join(res))
+    if res:
+        echo("_arguments '*: :((%s))'" % '\n'.join(res))
+    else:
+        echo("_files")
 
     return True
 
