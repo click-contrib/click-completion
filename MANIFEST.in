@@ -1,2 +1,2 @@
 recursive-include click_completion *.j2
-LICENSE
+include LICENSE
