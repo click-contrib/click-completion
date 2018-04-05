@@ -20,6 +20,14 @@ __version__ = '0.3.0'
 _invalid_ident_char_re = re.compile(r'[^a-zA-Z0-9_]')
 
 
+class CompletionConfiguration(object):
+    def __init__(self):
+        self.complete_options = False
+
+
+completion_configuration = CompletionConfiguration()
+
+
 def resolve_ctx(cli, prog_name, args):
     ctx = cli.make_context(prog_name, list(args), resilient_parsing=True)
     while ctx.args + ctx.protected_args and isinstance(ctx.command, MultiCommand):
@@ -52,26 +60,23 @@ def get_choices(cli, prog_name, args, incomplete):
     choices = []
     if optctx:
         choices += [c if isinstance(c, tuple) else (c, None) for c in optctx.type.complete(ctx, incomplete)]
-    elif incomplete and not incomplete[:1].isalnum():
-        for param in ctx.command.get_params(ctx):
-            if not isinstance(param, Option):
-                continue
-            for opt in param.opts:
-                if startswith(opt, incomplete):
-                    choices.append((opt, param.help))
-            for opt in param.secondary_opts:
-                if startswith(opt, incomplete):
-                    # don't put the doc so fish won't group the primary and
-                    # and secondary options
-                    choices.append((opt, None))
-    elif isinstance(ctx.command, MultiCommand):
-        for name in ctx.command.list_commands(ctx):
-            if startswith(name, incomplete):
-                choices.append((name, ctx.command.get_command_short_help(ctx, name)))
     else:
         for param in ctx.command.get_params(ctx):
             if isinstance(param, Argument):
                 choices += [c if isinstance(c, tuple) else (c, None) for c in param.type.complete(ctx, incomplete)]
+            if (completion_configuration.complete_options or incomplete and not incomplete[:1].isalnum()) and isinstance(param, Option):
+                for opt in param.opts:
+                    if startswith(opt, incomplete):
+                        choices.append((opt, param.help))
+                for opt in param.secondary_opts:
+                    if startswith(opt, incomplete):
+                        # don't put the doc so fish won't group the primary and
+                        # and secondary options
+                        choices.append((opt, None))
+        if isinstance(ctx.command, MultiCommand):
+            for name in ctx.command.list_commands(ctx):
+                if startswith(name, incomplete):
+                    choices.append((name, ctx.command.get_command_short_help(ctx, name)))
 
     for item, help in choices:
         yield (item, help)
@@ -275,13 +280,14 @@ def _shellcomplete(cli, prog_name, complete_var=None):
     sys.exit()
 
 
-def init():
+def init(complete_options=False):
     """patch click to support enhanced completion"""
     import click
     click.types.ParamType.complete = param_type_complete
     click.types.Choice.complete = choice_complete
     click.core.MultiCommand.get_command_short_help = multicommand_get_command_short_help
     click.core._bashcomplete = _shellcomplete
+    completion_configuration.complete_options = complete_options
 
 
 class DocumentedChoice(ParamType):
