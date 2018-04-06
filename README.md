@@ -8,6 +8,8 @@ All the supported shells are able to complete all the command line
 arguments and options defined with click. In addition, fish and Zsh are
 also displaying the options and commands help during the completion.
 
+[![asciicast](https://asciinema.org/a/74sjdBLPwkzq3BUVgyS7f63DO.png)](https://asciinema.org/a/74sjdBLPwkzq3BUVgyS7f63DO?speed=2&loop=1&autoplay=1)
+
 ## Activation
 
 In order to activate the completion, you need to:

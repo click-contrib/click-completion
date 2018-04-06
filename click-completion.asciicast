@@ -1,0 +1,366 @@
+{
+  "height": 26,
+  "stdout": [
+    [
+      0.043954,
+      "\u001b]0;click-completion\u0007"
+    ],
+    [
+      0.001408,
+      "\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.003152,
+      "Welcome to fish, the friendly interactive shell\r\nType \u001b[32mhelp\u001b[30m\u001b(B\u001b[m for instructions on how to use fish\r\n"
+    ],
+    [
+      0.00383,
+      "\u001b[?2004h"
+    ],
+    [
+      0.002053,
+      "\u001b]7;file://L1704-00265/home/glehmann/src/click-completion\u0007"
+    ],
+    [
+      0.005638,
+      "\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      2e-05,
+      "\u001b[2m⏎\u001b(B\u001b[m                                                                                               \r⏎ \r\u001b[2K"
+    ],
+    [
+      0.000358,
+      "glehmann@L1704-00265 \u001b[32m~/s/click-completion\u001b[30m\u001b(B\u001b[m> \u001b[K"
+    ],
+    [
+      1.130217,
+      "click-completion-command"
+    ],
+    [
+      0.000988,
+      "\u001b[30m\u001b(B\u001b[m\r"
+    ],
+    [
+      9e-05,
+      "glehmann@L1704-00265 \u001b[32m~/s/click-completion\u001b[30m\u001b(B\u001b[m> click-completion-command\u001b[K"
+    ],
+    [
+      8.9e-05,
+      "\u001b[24D\u001b[38;2;0;95;215mclick-completion-command\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.001629,
+      "\u001b[38;2;85;85;85m install bash \u001b[14D\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      1.032403,
+      "\u001b[38;2;0;95;215m \u001b[38;2;85;85;85minstall bash \u001b[13D\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.0002,
+      "\b \u001b[38;2;85;85;85minstall bash \u001b[13D\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.824121,
+      "\r\ninstall       (\u001b[38;2;85;85;85mInstall the click-completion-command...\u001b[30m\u001b(B\u001b[m)\r\nshow  (\u001b[38;2;85;85;85mShow the click-completion-command completion...\u001b[30m\u001b(B\u001b[m)\u001b[A\u001b[A\u001b[13C"
+    ],
+    [
+      0.716255,
+      "install \u001b[38;2;85;85;85mbash \r\n\u001b[1m\u001b[30m\u001b(B\u001b[m\u001b[45minstall       (\u001b[38;2;85;85;85mInstall the click-completion-command...\u001b[30m\u001b(B\u001b[m\u001b[45m)\u001b[A\u001b[21C\u001b(B\u001b[m\u001b[30m\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.000268,
+      "\b\b\b\b\b\b\b\b\u001b[38;2;0;175;255minstall\u001b[30m\u001b(B\u001b[m \u001b[38;2;85;85;85mbash \b\b\b\b\b\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.535347,
+      "\r\n\u001b[K\r\n\u001b[K\u001b[A\u001b[A\u001b[76C"
+    ],
+    [
+      0.576608,
+      "\r\nbash          (\u001b[38;2;85;85;85mBourne again shell\u001b[30m\u001b(B\u001b[m)  powershell  (\u001b[38;2;85;85;85mWindows PowerShell\u001b[30m\u001b(B\u001b[m)\r\nfish  (\u001b[38;2;85;85;85mFriendly interactive shell\u001b[30m\u001b(B\u001b[m)  zsh                    (\u001b[38;2;85;85;85mZ shell\u001b[30m\u001b(B\u001b[m)\u001b[A\u001b[A\u001b[8C"
+    ],
+    [
+      1.488487,
+      "bash \r\n\u001b[1m\u001b[45mbash          (\u001b[38;2;85;85;85mBourne again shell\u001b[30m\u001b(B\u001b[m\u001b[45m)\u001b(B\u001b[m\u001b[30m\u001b[30m\u001b(B\u001b[m  powershell  (\u001b[38;2;85;85;85mWindows PowerShell\u001b[30m\u001b(B\u001b[m)\u001b[A\u001b[13C"
+    ],
+    [
+      0.000217,
+      "\b\b\b\b\b\u001b[38;2;0;175;255mbash\u001b[30m\u001b(B\u001b[m "
+    ],
+    [
+      0.542287,
+      "\r\n\u001b[K\r\n\u001b[K\u001b[A\u001b[A\u001b[81C"
+    ],
+    [
+      0.735563,
+      "\r\n\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.000118,
+      "\u001b[?2004l"
+    ],
+    [
+      0.000127,
+      "\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.060751,
+      "bash completion installed in /home/glehmann/.bash_completion\r\n"
+    ],
+    [
+      0.01473,
+      "\u001b]0;click-completion\u0007"
+    ],
+    [
+      0.001496,
+      "\u001b[?2004h"
+    ],
+    [
+      0.001082,
+      "\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      2e-05,
+      "\u001b[2m⏎\u001b(B\u001b[m                                                                                               \r⏎ \r\u001b[2K"
+    ],
+    [
+      1.9e-05,
+      "glehmann@L1704-00265 \u001b[32m~/s/click-completion\u001b[30m\u001b(B\u001b[m> \u001b[K"
+    ],
+    [
+      1.218768,
+      "b"
+    ],
+    [
+      0.000192,
+      "\b\u001b[31m\u001b[1mb\u001b(B\u001b[m"
+    ],
+    [
+      0.000189,
+      "\u001b[38;2;85;85;85mash\b\b\b\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.222564,
+      "\u001b[31m\u001b[1ma\u001b(B\u001b[m\u001b[38;2;85;85;85msh\b\b\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.071928,
+      "\u001b[31m\u001b[1ms\u001b(B\u001b[m\u001b[38;2;85;85;85mh\b\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.176736,
+      "\u001b[31m\u001b[1mh\u001b(B\u001b[m"
+    ],
+    [
+      0.000399,
+      "\b\b\b\b\u001b[38;2;0;95;215mbash\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.319754,
+      "\r\n\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.000219,
+      "\u001b[?2004l"
+    ],
+    [
+      0.000145,
+      "\u001b[30m\u001b(B\u001b[m"
+    ],
+    [
+      0.051067,
+      "\u001b]0;glehmann@L1704-00265: ~/src/click-completion\u0007\u001b[01;32mglehmann@L1704-00265\u001b[00m:\u001b[01;34m~/src/click-completion\u001b[00m$ "
+    ],
+    [
+      1.068829,
+      "click-completion-command"
+    ],
+    [
+      0.567348,
+      " "
+    ],
+    [
+      0.240724,
+      "\u0007"
+    ],
+    [
+      0.508252,
+      "\r\ninstall  show     \r\n\u001b]0;glehmann@L1704-00265: ~/src/click-completion\u0007\u001b[01;32mglehmann@L1704-00265\u001b[00m:\u001b[01;34m~/src/click-completion\u001b[00m$ click-completion-command "
+    ],
+    [
+      1.051105,
+      "i"
+    ],
+    [
+      1.095134,
+      "nstall "
+    ],
+    [
+      1.382431,
+      "\u0007"
+    ],
+    [
+      0.535865,
+      "\r\nbash        fish        powershell  zsh         \r\n\u001b]0;glehmann@L1704-00265: ~/src/click-completion\u0007\u001b[01;32mglehmann@L1704-00265\u001b[00m:\u001b[01;34m~/src/click-completion\u001b[00m$ click-completion-command install "
+    ],
+    [
+      0.858617,
+      "z"
+    ],
+    [
+      0.165233,
+      "sh "
+    ],
+    [
+      0.826693,
+      "\r\n"
+    ],
+    [
+      0.081266,
+      "zsh completion installed in /home/glehmann/.zshrc\r\n"
+    ],
+    [
+      0.00917,
+      "\u001b]0;glehmann@L1704-00265: ~/src/click-completion\u0007\u001b[01;32mglehmann@L1704-00265\u001b[00m:\u001b[01;34m~/src/click-completion\u001b[00m$ "
+    ],
+    [
+      1.053024,
+      "z"
+    ],
+    [
+      0.304552,
+      "s"
+    ],
+    [
+      0.32801,
+      "h"
+    ],
+    [
+      0.296039,
+      "\r\n"
+    ],
+    [
+      0.235335,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                               \r \r"
+    ],
+    [
+      0.001023,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[44mglehmann@L1704-00265\u001b[49m \u001b[1m\u001b[32m~/src/click-completion\r\n\r\u001b[37m % \u001b[0m\u001b[37m\u001b[39m\u001b[49m\u001b[K"
+    ],
+    [
+      4.6e-05,
+      "\u001b[?1h\u001b=\u001b[?2004h"
+    ],
+    [
+      2.33259,
+      "\u001b[7mclick-completion-command\u001b[27m"
+    ],
+    [
+      1.505161,
+      "\u001b[24D\u001b[27mc\u001b[27ml\u001b[27mi\u001b[27mc\u001b[27mk\u001b[27m-\u001b[27mc\u001b[27mo\u001b[27mm\u001b[27mp\u001b[27ml\u001b[27me\u001b[27mt\u001b[27mi\u001b[27mo\u001b[27mn\u001b[27m-\u001b[27mc\u001b[27mo\u001b[27mm\u001b[27mm\u001b[27ma\u001b[27mn\u001b[27md\u001b[1m \u001b[0m"
+    ],
+    [
+      1.162655,
+      "\u0007\b\u001b[0m \r\r\n"
+    ],
+    [
+      1.7e-05,
+      "\u001b[0minstall  -- Install the click-completion-command...\r\n\u001b[Jshow     -- Show the click-completion-command completion...\u001b[J\u001b[A\u001b[A\u001b[0m\u001b[27m\u001b[24m\u001b[0m\u001b[39m\u001b[49m\r\u001b[3Cclick-completion-command\u001b[K\u001b[0m\u001b[39m\u001b[49m\u001b[1C"
+    ],
+    [
+      1.009869,
+      "\u0007install"
+    ],
+    [
+      1.177475,
+      " "
+    ],
+    [
+      0.438359,
+      "\u0007\r\r\n\u001b[J"
+    ],
+    [
+      3.4e-05,
+      "\u001b[0mbash        -- Bourne again shell\r\nfish        -- Friendly interactive shell\r\npowershell  -- Windows PowerShell\r\n\u001b[Jzsh         -- Z shell\u001b[J\u001b[4A\u001b[0m\u001b[27m\u001b[24m\u001b[0m\u001b[39m\u001b[49m\r\u001b[3Cclick-completion-command install\u001b[K\u001b[0m\u001b[39m\u001b[49m\u001b[1C"
+    ],
+    [
+      1.15356,
+      "f"
+    ],
+    [
+      0.462914,
+      "ish\u001b[1m \u001b[0m"
+    ],
+    [
+      0.760856,
+      "\b\u001b[0m \b"
+    ],
+    [
+      0.000114,
+      "\u001b[?1l\u001b>"
+    ],
+    [
+      8.7e-05,
+      "\u001b[?2004l\r\r\n\u001b[J"
+    ],
+    [
+      0.083645,
+      "fish completion installed in /home/glehmann/.config/fish/completions/click-completion-command.fish\r\n"
+    ],
+    [
+      0.007134,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                               \r \r"
+    ],
+    [
+      0.00104,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[44mglehmann@L1704-00265\u001b[49m \u001b[1m\u001b[32m~/src/click-completion\r\n\r\u001b[37m % \u001b[0m\u001b[37m\u001b[39m\u001b[49m\u001b[K\u001b[?1h\u001b="
+    ],
+    [
+      5.1e-05,
+      "\u001b[?2004h"
+    ],
+    [
+      1.588077,
+      "f"
+    ],
+    [
+      0.103704,
+      "\bfi"
+    ],
+    [
+      0.176201,
+      "s"
+    ],
+    [
+      0.199877,
+      "h"
+    ],
+    [
+      0.344228,
+      "\u001b[?1l\u001b>"
+    ],
+    [
+      5.7e-05,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.073316,
+      "\u001b]0;click-completion\u0007"
+    ],
+    [
+      0.001265,
+      "\u001b[30m\u001b(B\u001b[m"
+    ]
+  ],
+  "version": 1,
+  "env": {
+    "TERM": "xterm-256color",
+    "SHELL": "/usr/bin/fish"
+  },
+  "title": null,
+  "command": null,
+  "width": 96,
+  "duration": 37.064273
+}
