@@ -144,7 +144,7 @@ def do_fish_complete(cli, prog_name):
 
     for item, help in get_choices(cli, prog_name, args, incomplete):
         if help:
-            echo("%s\t%s" % (item, help))
+            echo("%s\t%s" % (item, re.sub('\s', ' ', help)))
         else:
             echo(item)
 
