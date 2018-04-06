@@ -280,18 +280,24 @@ def _shellcomplete(cli, prog_name, complete_var=None):
     sys.exit()
 
 
+_initialized = False
+
+
 def init(complete_options=False):
     """Initialize the enhanced click completion
 
     Args:
         complete_options (bool): always complete the options, even when the user hasn't typed a first dash
     """
-    import click
-    click.types.ParamType.complete = param_type_complete
-    click.types.Choice.complete = choice_complete
-    click.core.MultiCommand.get_command_short_help = multicommand_get_command_short_help
-    click.core._bashcomplete = _shellcomplete
-    completion_configuration.complete_options = complete_options
+    global _initialized
+    if not _initialized:
+        import click
+        click.types.ParamType.complete = param_type_complete
+        click.types.Choice.complete = choice_complete
+        click.core.MultiCommand.get_command_short_help = multicommand_get_command_short_help
+        click.core._bashcomplete = _shellcomplete
+        completion_configuration.complete_options = complete_options
+        _initialized = True
 
 
 class DocumentedChoice(ParamType):
