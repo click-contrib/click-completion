@@ -15,7 +15,7 @@ import six
 
 from click import echo, MultiCommand, Option, Argument, ParamType
 
-__version__ = '0.4.0'
+__version__ = '0.3.0'
 
 _invalid_ident_char_re = re.compile(r'[^a-zA-Z0-9_]')
 
