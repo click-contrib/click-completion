@@ -281,7 +281,11 @@ def _shellcomplete(cli, prog_name, complete_var=None):
 
 
 def init(complete_options=False):
-    """patch click to support enhanced completion"""
+    """Initialize the enhanced click completion
+
+    Args:
+        complete_options (bool): always complete the options, even when the user hasn't typed a first dash
+    """
     import click
     click.types.ParamType.complete = param_type_complete
     click.types.Choice.complete = choice_complete
