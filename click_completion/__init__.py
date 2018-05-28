@@ -50,20 +50,30 @@ def get_choices(cli, prog_name, args, incomplete):
     ctx = resolve_ctx(cli, prog_name, args)
     if ctx is None:
         return
-
     optctx = None
     if args:
-        for param in ctx.command.get_params(ctx):
-            if isinstance(param, Option) and not param.is_flag and args[-1] in param.opts + param.secondary_opts:
+        options = [param
+                   for param in ctx.command.get_params(ctx)
+                   if isinstance(param, Option)]
+        arguments = [param
+                     for param in ctx.command.get_params(ctx)
+                     if isinstance(param, Argument)]
+        for param in options:
+            if not param.is_flag and args[-1] in param.opts + param.secondary_opts:
                 optctx = param
-
+        if optctx is None:
+            for param in arguments:
+                if (
+                        not incomplete.startswith("-")
+                        and ctx.params.get(param.name) is None
+                ):
+                    optctx = param
+                    break
     choices = []
     if optctx:
         choices += [c if isinstance(c, tuple) else (c, None) for c in optctx.type.complete(ctx, incomplete)]
     else:
         for param in ctx.command.get_params(ctx):
-            if isinstance(param, Argument):
-                choices += [c if isinstance(c, tuple) else (c, None) for c in param.type.complete(ctx, incomplete)]
             if (completion_configuration.complete_options or incomplete and not incomplete[:1].isalnum()) and isinstance(param, Option):
                 for opt in param.opts:
                     if startswith(opt, incomplete):
