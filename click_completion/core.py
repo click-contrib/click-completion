@@ -10,6 +10,7 @@ import subprocess
 
 import click
 from click import Option, Argument, MultiCommand, echo
+from enum import Enum
 
 from click_completion.lib import resolve_ctx, split_args, single_quote, double_quote, get_auto_shell
 
@@ -276,8 +277,8 @@ def get_code(shell=None, prog_name=None, env_name=None, extra_env=None):
 
     Parameters
     ----------
-    shell : str
-        The shell type. Possible values are 'bash', 'fish', 'zsh' and 'powershell' (Default value = None)
+    shell : Shell
+        The shell type (Default value = None)
     prog_name : str
         The program name on the command line (Default value = None)
     env_name : str
@@ -293,11 +294,13 @@ def get_code(shell=None, prog_name=None, env_name=None, extra_env=None):
     from jinja2 import Environment, FileSystemLoader
     if shell in [None, 'auto']:
         shell = get_auto_shell()
+    if not isinstance(shell, Shell):
+        shell = Shell[shell]
     prog_name = prog_name or click.get_current_context().find_root().info_name
     env_name = env_name or '_%s_COMPLETE' % prog_name.upper().replace('-', '_')
     extra_env = extra_env if extra_env else {}
     env = Environment(loader=FileSystemLoader(os.path.dirname(__file__)))
-    template = env.get_template('%s.j2' % shell)
+    template = env.get_template('%s.j2' % shell.name)
     return template.render(prog_name=prog_name, complete_var=env_name, extra_env=extra_env)
 
 
@@ -306,9 +309,8 @@ def install(shell=None, prog_name=None, env_name=None, path=None, append=None, e
 
     Parameters
     ----------
-    shell : str
-        The shell type targeted. It will be guessed with get_auto_shell() if the value is None. Possible values are
-        'bash', 'fish', 'zsh' and 'powershell' (Default value = None)
+    shell : Shell
+        The shell type targeted. It will be guessed with get_auto_shell() if the value is None (Default value = None)
     prog_name : str
         The program name on the command line. It will be automatically computed if the value is None
         (Default value = None)
@@ -368,10 +370,15 @@ def install(shell=None, prog_name=None, env_name=None, path=None, append=None, e
     return shell, path
 
 
-shells = {
-    'bash': 'Bourne again shell',
-    'fish': 'Friendly interactive shell',
-    'zsh': 'Z shell',
-    'powershell': 'Windows PowerShell'
-}
+class Shell(Enum):
+    bash = 'Bourne again shell'
+    fish = 'Friendly interactive shell'
+    zsh = 'Z shell'
+    powershell = 'Windows PowerShell'
+
+
+# deprecated - use Shell instead
+shells = dict((shell.name, shell.value) for shell in Shell)
+
+
 completion_configuration = CompletionConfiguration()

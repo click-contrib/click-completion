@@ -6,9 +6,10 @@ from __future__ import print_function, absolute_import
 import six
 
 from click import ParamType
+from enum import Enum
 
 from click_completion.core import completion_configuration, get_code, install, shells, resolve_ctx, get_choices, \
-    startswith
+    startswith, Shell
 from click_completion.lib import get_auto_shell
 from click_completion.patch import patch as _patch
 
@@ -40,13 +41,16 @@ class DocumentedChoice(ParamType):
 
     Parameters
     ----------
-    choices : dict
+    choices : dict or Enum
         A dictionary with the possible choice as key, and the corresponding help string as value
     """
     name = 'choice'
 
     def __init__(self, choices):
-        self.choices = dict(choices)
+        if isinstance(choices, Enum):
+            self.choices = dict((choice.name, choice.value) for choice in choices)
+        else:
+            self.choices = dict(choices)
 
     def get_metavar(self, param):
         return '[%s]' % '|'.join(self.choices.keys())
