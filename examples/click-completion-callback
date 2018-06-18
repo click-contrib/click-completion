@@ -7,13 +7,15 @@ import click_completion
 
 import click
 
+import click_completion.core
+
 click_completion.init()
 
 
 def install_callback(ctx, attr, value):
     if not value or ctx.resilient_parsing:
         return value
-    shell, path = click_completion.install()
+    shell, path = click_completion.core.install()
     click.echo('%s completion installed in %s' % (shell, path))
     exit(0)
 
