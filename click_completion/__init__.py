@@ -21,6 +21,16 @@ _invalid_ident_char_re = re.compile(r'[^a-zA-Z0-9_]')
 
 
 class CompletionConfiguration(object):
+    """A class to hold the completion configuration
+
+    Attributes
+    ----------
+
+    complete_options : bool
+        Wether to complete the options or not. By default, the options are only completed after the user has entered
+        a first dash '-'. Change this value to True to always complete the options, even without first typing any
+        character.
+    """
     def __init__(self):
         self.complete_options = False
 
@@ -29,6 +39,22 @@ completion_configuration = CompletionConfiguration()
 
 
 def resolve_ctx(cli, prog_name, args):
+    """
+
+    Parameters
+    ----------
+    cli : click.Command
+        The main click Command of the program
+    prog_name : str
+        The program name on the command line
+    args : [str]
+        The arguments already written by the user on the command line
+
+    Returns
+    -------
+    click.core.Context
+        A new context corresponding to the current command
+    """
     ctx = cli.make_context(prog_name, list(args), resilient_parsing=True)
     while ctx.args + ctx.protected_args and isinstance(ctx.command, MultiCommand):
         a = ctx.protected_args + ctx.args
@@ -42,11 +68,43 @@ def resolve_ctx(cli, prog_name, args):
 def startswith(string, incomplete):
     """Returns True when string starts with incomplete
 
-    It might be overridden with a fuzzier version - for example a case insensitive version"""
+    It might be overridden with a fuzzier version - for example a case insensitive version
+
+    Parameters
+    ----------
+    string : str
+        The string to check
+    incomplete : str
+        The incomplete string to compare to the begining of string
+
+    Returns
+    -------
+    bool
+        True if string starts with incomplete, False otherwise
+    """
     return string.startswith(incomplete)
 
 
 def get_choices(cli, prog_name, args, incomplete):
+    """
+
+    Parameters
+    ----------
+    cli : click.Command
+        The main click Command of the program
+    prog_name : str
+        The program name on the command line
+    args : [str]
+        The arguments already written by the user on the command line
+    incomplete : str
+        The partial argument to complete
+
+    Returns
+    -------
+    [(str, str)]
+        A list of completion results. The first element of each tuple is actually the argument to complete, the second
+        element is an help string for this argument.
+    """
     ctx = resolve_ctx(cli, prog_name, args)
     if ctx is None:
         return
@@ -96,7 +154,18 @@ def get_choices(cli, prog_name, args, incomplete):
 
 
 def split_args(line):
-    """Version of shlex.split that silently accept incomplete strings."""
+    """Version of shlex.split that silently accept incomplete strings.
+
+    Parameters
+    ----------
+    line : str
+        The string to split
+
+    Returns
+    -------
+    [str]
+        The line split in separated arguments
+    """
     lex = shlex.shlex(line, posix=True)
     lex.whitespace_split = True
     lex.commenters = ''
@@ -113,16 +182,21 @@ def split_args(line):
     return res
 
 
-def decode_args(strings):
-    res = []
-    for s in strings:
-        s = split_args(s)
-        s = s[0] if s else ''
-        res.append(s)
-    return res
-
-
 def do_bash_complete(cli, prog_name):
+    """Do the completion for bash
+
+    Parameters
+    ----------
+    cli : click.Command
+        The main click Command of the program
+    prog_name : str
+        The program name on the command line
+
+    Returns
+    -------
+    bool
+        True if the completion was successful, False otherwise
+    """
     comp_words = os.environ['COMP_WORDS']
     try:
         cwords = shlex.split(comp_words)
@@ -147,6 +221,20 @@ def do_bash_complete(cli, prog_name):
 
 
 def do_fish_complete(cli, prog_name):
+    """Do the fish completion
+
+    Parameters
+    ----------
+    cli : click.Command
+        The main click Command of the program
+    prog_name : str
+        The program name on the command line
+
+    Returns
+    -------
+    bool
+        True if the completion was successful, False otherwise
+    """
     commandline = os.environ['COMMANDLINE']
     args = split_args(commandline)[1:]
     if args and not commandline.endswith(' '):
@@ -165,6 +253,20 @@ def do_fish_complete(cli, prog_name):
 
 
 def do_zsh_complete(cli, prog_name):
+    """Do the zsh completion
+
+    Parameters
+    ----------
+    cli : click.Command
+        The main click Command of the program
+    prog_name : str
+        The program name on the command line
+
+    Returns
+    -------
+    bool
+        True if the completion was successful, False otherwise
+    """
     commandline = os.environ['COMMANDLINE']
     args = split_args(commandline)[1:]
     if args and not commandline.endswith(' '):
@@ -190,6 +292,20 @@ def do_zsh_complete(cli, prog_name):
 
 
 def do_powershell_complete(cli, prog_name):
+    """Do the powershell completion
+
+    Parameters
+    ----------
+    cli : click.Command
+        The main click Command of the program
+    prog_name : str
+        The program name on the command line
+
+    Returns
+    -------
+    bool
+        True if the completion was successful, False otherwise
+    """
     commandline = os.environ['COMMANDLINE']
     args = split_args(commandline)[1:]
     quote = single_quote
@@ -211,7 +327,18 @@ find_unsafe = re.compile(r'[^\w@%+=:,./-]').search
 
 
 def single_quote(s):
-    """Return a shell-escaped version of the string *s*."""
+    """Escape a string with single quotes in order to be parsed as a single element by shlex
+
+    Parameters
+    ----------
+    s : str
+        The string to quote
+
+    Returns
+    -------
+    str
+       The quoted string
+    """
     if not s:
         return "''"
     if find_unsafe(s) is None:
@@ -223,7 +350,18 @@ def single_quote(s):
 
 
 def double_quote(s):
-    '''Return a shell-escaped version of the string *s*.'''
+    """Escape a string with double quotes in order to be parsed as a single element by shlex
+
+    Parameters
+    ----------
+    s : str
+        The string to quote
+
+    Returns
+    -------
+    str
+       The quoted string
+    """
     if not s:
         return '""'
     if find_unsafe(s) is None:
@@ -237,19 +375,77 @@ def double_quote(s):
 # extend click completion features
 
 def param_type_complete(self, ctx, incomplete):
+    """Returns a set of possible completions values, along with their documentation string
+
+    Default implementation of the complete method for click.types.ParamType just returns an empty list
+
+    Parameters
+    ----------
+    ctx : click.core.Context
+        The current context
+    incomplete :
+        The string to complete
+
+    Returns
+    -------
+    [(str, str)]
+        A list of completion results. The first element of each tuple is actually the argument to complete, the second
+        element is an help string for this argument.
+    """
     return []
 
 
 def choice_complete(self, ctx, incomplete):
-    return [c for c in self.choices if c.startswith(incomplete)]
+    """Returns the completion results for click.core.Choice
+
+    Parameters
+    ----------
+    ctx : click.core.Context
+        The current context
+    incomplete :
+        The string to complete
+
+    Returns
+    -------
+    [(str, str)]
+        A list of completion results
+    """
+    return [(c, None) for c in self.choices if c.startswith(incomplete)]
 
 
 def multicommand_get_command_short_help(self, ctx, cmd_name):
+    """Returns the short help of a subcommand
+
+    It allows MultiCommand subclasses to implement more efficient ways to provide the subcommand short help, for
+    example by leveraging some caching.
+
+    Parameters
+    ----------
+    ctx : click.core.Context
+        The current context
+    cmd_name :
+        The sub command name
+
+    Returns
+    -------
+    str
+        The sub command short help
+    """
     return self.get_command(ctx, cmd_name).short_help
 
 
 def _shellcomplete(cli, prog_name, complete_var=None):
-    """Internal handler for the bash completion support."""
+    """Internal handler for the bash completion support.
+
+    Parameters
+    ----------
+    cli : click.Command
+        The main click Command of the program
+    prog_name : str
+        The program name on the command line
+    complete_var : str
+        The environment variable name used to control the completion behavior (Default value = None)
+    """
     if complete_var is None:
         complete_var = '_%s_COMPLETE' % (prog_name.replace('-', '_')).upper()
     complete_instr = os.environ.get(complete_var)
@@ -299,8 +495,10 @@ _initialized = False
 def init(complete_options=False):
     """Initialize the enhanced click completion
 
-    Args:
-        complete_options (bool): always complete the options, even when the user hasn't typed a first dash
+    Parameters
+    ----------
+    complete_options : bool
+        always complete the options, even when the user hasn't typed a first dash (Default value = False)
     """
     global _initialized
     if not _initialized:
@@ -318,6 +516,11 @@ class DocumentedChoice(ParamType):
     supported values.  All of these values have to be strings. Each value may
     be associated to a help message that will be display in the error message
     and during the completion.
+
+    Parameters
+    ----------
+    choices : dict
+        A dictionary with the possible choice as key, and the corresponding help string as value
     """
     name = 'choice'
 
@@ -355,7 +558,24 @@ class DocumentedChoice(ParamType):
 
 
 def get_code(shell=None, prog_name=None, env_name=None, extra_env=None):
-    """Return the specified completion code"""
+    """Returns the completion code to be evaluated by the shell
+
+    Parameters
+    ----------
+    shell : str
+        The shell type. Possible values are 'bash', 'fish', 'zsh' and 'powershell' (Default value = None)
+    prog_name : str
+        The program name on the command line (Default value = None)
+    env_name : str
+        The environment variable used to control the completion (Default value = None)
+    extra_env : dict
+        Some extra environment variables to be added to the generated code (Default value = None)
+
+    Returns
+    -------
+    str
+        The code to be evaluated by the shell
+    """
     from jinja2 import Environment, FileSystemLoader
     if shell in [None, 'auto']:
         shell = get_auto_shell()
@@ -368,7 +588,9 @@ def get_code(shell=None, prog_name=None, env_name=None, extra_env=None):
 
 
 def get_auto_shell():
-    """Return the shell that is calling this process"""
+    """Returns the current shell
+
+    This feature depends on psutil and will not work if it is not available"""
     try:
         import psutil
         parent = psutil.Process(os.getpid()).parent()
@@ -381,7 +603,28 @@ def get_auto_shell():
 
 
 def install(shell=None, prog_name=None, env_name=None, path=None, append=None, extra_env=None):
-    """Install the completion"""
+    """Install the completion
+
+    Parameters
+    ----------
+    shell : str
+        The shell type targeted. It will be guessed with get_auto_shell() if the value is None. Possible values are
+        'bash', 'fish', 'zsh' and 'powershell' (Default value = None)
+    prog_name : str
+        The program name on the command line. It will be automatically computed if the value is None
+        (Default value = None)
+    env_name : str
+        The environment variable name used to control the completion. It will be automatically computed if the value is
+        None (Default value = None)
+    path : str
+        The installation path of the code to be evaluated by the shell. The standard installation path is used if the
+        value is None (Default value = None)
+    append : bool
+        Whether to append the content to the file or to override it. The default behavior depends on the shell type
+        (Default value = None)
+    extra_env : dict
+        A set of environment variables and their values to be added to the generated code (Default value = None)
+    """
     prog_name = prog_name or click.get_current_context().find_root().info_name
     shell = shell or get_auto_shell()
     if append is None and path is not None:
