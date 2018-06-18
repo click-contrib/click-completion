@@ -359,6 +359,8 @@ def get_code(shell=None, prog_name=None, env_name=None, extra_env=None):
     from jinja2 import Environment, FileSystemLoader
     if shell in [None, 'auto']:
         shell = get_auto_shell()
+    else:
+        shell = shell.replace('bash.exe', 'bash')  # Enable bash on windows
     prog_name = prog_name or click.get_current_context().find_root().info_name
     env_name = env_name or '_%s_COMPLETE' % prog_name.upper().replace('-', '_')
     extra_env = extra_env if extra_env else {}
@@ -384,6 +386,7 @@ def install(shell=None, prog_name=None, env_name=None, path=None, append=None, e
     """Install the completion"""
     prog_name = prog_name or click.get_current_context().find_root().info_name
     shell = shell or get_auto_shell()
+    shell = shell.replace('bash.exe', 'bash')  # Enable bash on windows
     if append is None and path is not None:
         append = True
     if append is not None:
@@ -428,6 +431,7 @@ def install(shell=None, prog_name=None, env_name=None, path=None, append=None, e
 
 shells = {
     'bash': 'Bourne again shell',
+    'bash.exe': 'Bash on Windows',
     'fish': 'Friendly interactive shell',
     'zsh': 'Z shell',
     'powershell': 'Windows PowerShell'
