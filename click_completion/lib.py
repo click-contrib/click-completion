@@ -3,13 +3,11 @@
 
 from __future__ import print_function, absolute_import
 
-import os
-import platform
-
 import re
 import shlex
 
 import click
+import shellingham
 from click import MultiCommand
 
 find_unsafe = re.compile(r'[^\w@%+=:,./-]').search
@@ -121,12 +119,4 @@ def get_auto_shell():
     """Returns the current shell
 
     This feature depends on psutil and will not work if it is not available"""
-    try:
-        import psutil
-        parent = psutil.Process(os.getpid()).parent()
-        if platform.system() == 'Windows':
-            parent = parent.parent() or parent
-        return parent.name().replace('.exe', '')
-    except ImportError:
-        raise click.UsageError("Please explicitly give the shell type or install the psutil package to activate the"
-                               " automatic shell detection.")
+    return shellingham.detect_shell()[0]

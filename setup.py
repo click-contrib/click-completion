@@ -26,5 +26,6 @@ setup(
         'click',
         'jinja2',
         'six',
+        'shellingham',
     ],
 )
