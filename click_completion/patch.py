@@ -36,7 +36,7 @@ def param_type_complete(self, ctx, incomplete):
     return []
 
 
-def choice_complete(self, ctx, incomplete):
+def choice_complete(self, ctx, args, incomplete):
     """Returns the completion results for click.core.Choice
 
     Parameters
