@@ -51,7 +51,7 @@ def choice_complete(self, ctx, incomplete):
     [(str, str)]
         A list of completion results
     """
-    return [(c, None) for c in self.choices if c.startswith(incomplete)]
+    return [(c, None) for c in self.choices if incomplete in c]
 
 
 def multicommand_get_command_short_help(self, ctx, cmd_name):
