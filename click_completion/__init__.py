@@ -18,18 +18,23 @@ __version__ = '0.3.1'
 _initialized = False
 
 
-def init(complete_options=False):
+def init(complete_options=False, match_incomplete=None):
     """Initialize the enhanced click completion
 
     Parameters
     ----------
     complete_options : bool
         always complete the options, even when the user hasn't typed a first dash (Default value = False)
+    match_incomplete : fonction
+        a function with two parameters choice and incomplete. Must return True
+        if incomplete is a correct match for choice, False otherwise.
     """
     global _initialized
     if not _initialized:
         _patch()
         completion_configuration.complete_options = complete_options
+        if match_incomplete is not None:
+            completion_configuration.match_incomplete = match_incomplete
         _initialized = True
 
 
