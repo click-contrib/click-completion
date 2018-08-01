@@ -25,7 +25,7 @@ def init(complete_options=False, match_incomplete=None):
     ----------
     complete_options : bool
         always complete the options, even when the user hasn't typed a first dash (Default value = False)
-    match_incomplete : fonction
+    match_incomplete : func
         a function with two parameters choice and incomplete. Must return True
         if incomplete is a correct match for choice, False otherwise.
     """
