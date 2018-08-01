@@ -10,7 +10,7 @@ import click
 from click import echo
 
 from click_completion.core import do_bash_complete, do_fish_complete, do_zsh_complete, do_powershell_complete,\
-    get_code, install
+    get_code, install, completion_configuration
 
 """All the code used to monkey patch click"""
 
@@ -51,7 +51,10 @@ def choice_complete(self, ctx, incomplete):
     [(str, str)]
         A list of completion results
     """
-    return [(c, None) for c in self.choices if c.startswith(incomplete)]
+    return [
+        (c, None) for c in self.choices
+        if completion_configuration.match_incomplete(c, incomplete)
+    ]
 
 
 def multicommand_get_command_short_help(self, ctx, cmd_name):
