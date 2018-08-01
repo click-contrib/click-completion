@@ -164,7 +164,7 @@ def do_bash_complete(cli, prog_name):
     if quoted:
         echo('\t'.join(opt for opt, _ in choices), nl=False)
     else:
-        echo('\t'.join(re.sub(r"""([\s\\"'])""", r'\\\1', opt) for opt, _ in choices), nl=False)
+        echo('\t'.join(re.sub(r"""([\s\\"'()])""", r'\\\1', opt) for opt, _ in choices), nl=False)
 
     return True
 
