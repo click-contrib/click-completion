@@ -84,4 +84,5 @@ class DocumentedChoice(ParamType):
         return 'DocumentedChoice(%r)' % list(self.choices.keys())
 
     def complete(self, ctx, incomplete):
-        return [(c, v) for c, v in six.iteritems(self.choices) if startswith(c, incomplete)]
+        match = completion_configuration.match_incomplete
+        return [(c, v) for c, v in six.iteritems(self.choices) if match(c, incomplete)]
