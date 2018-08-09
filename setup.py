@@ -28,4 +28,7 @@ setup(
         'six',
         'shellingham',
     ],
+    extras_require={
+        ":python_version < '3'": ["enum34"],
+    },
 )
