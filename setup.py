@@ -27,8 +27,6 @@ setup(
         'jinja2',
         'six',
         'shellingham',
+        'enum34; python_version<"3"',
     ],
-    extras_require={
-        ":python_version < '3'": ["enum34"],
-    },
 )
