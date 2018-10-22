@@ -82,10 +82,12 @@ def resolve_ctx(cli, prog_name, args, resilient_parsing=True):
         cmd = ctx.command.get_command(ctx, a[0])
         if cmd is None:
             return None
-        no_args_is_help = cmd.no_args_is_help
-        cmd.no_args_is_help = False
+        if hasattr(cmd, "no_args_is_help"):
+            no_args_is_help = cmd.no_args_is_help
+            cmd.no_args_is_help = False
         ctx = cmd.make_context(a[0], a[1:], parent=ctx, resilient_parsing=resilient_parsing)
-        cmd.no_args_is_help = no_args_is_help
+        if hasattr(cmd, "no_args_is_help"):
+            cmd.no_args_is_help = no_args_is_help
     return ctx
 
 
