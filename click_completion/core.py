@@ -194,7 +194,7 @@ def do_fish_complete(cli, prog_name):
 
     for item, help in get_choices(cli, prog_name, args, incomplete):
         if help:
-            echo("%s\t%s" % (item, re.sub('\s', ' ', help)))
+            echo("%s\t%s" % (item, re.sub(r'\s', ' ', help)))
         else:
             echo(item)
 
@@ -229,7 +229,7 @@ def do_zsh_complete(cli, prog_name):
     res = []
     for item, help in get_choices(cli, prog_name, args, incomplete):
         if help:
-            res.append('"%s"\:"%s"' % (escape(item), escape(help)))
+            res.append(r'"%s"\:"%s"' % (escape(item), escape(help)))
         else:
             res.append('"%s"' % escape(item))
     if res:
