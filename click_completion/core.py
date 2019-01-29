@@ -126,7 +126,7 @@ def get_choices(cli, prog_name, args, incomplete):
             for name in ctx.command.list_commands(ctx):
                 command = ctx.command.get_command(ctx, name)
                 if match(name, incomplete) and not command.hidden:
-                    choices.append((name, ctx.command.get_command_short_help(ctx, name)))
+                    choices.append((name, command.get_short_help_str()))
 
     for item, help in choices:
         yield (item, help)
