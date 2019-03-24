@@ -226,7 +226,7 @@ def do_zsh_complete(cli, prog_name):
         incomplete = ''
 
     def escape(s):
-        return s.replace('"', '""').replace("'", "''").replace('$', '\\$')
+        return s.replace('"', '""').replace("'", "''").replace('$', '\\$').replace('`', '\\`')
     res = []
     for item, help in get_choices(cli, prog_name, args, incomplete):
         if help:
