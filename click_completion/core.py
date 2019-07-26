@@ -110,7 +110,10 @@ def get_choices(cli, prog_name, args, incomplete):
                     break
     choices = []
     if optctx:
-        choices += [c if isinstance(c, tuple) else (c, None) for c in optctx.type.complete(ctx, incomplete)]
+        choices += [c if isinstance(c, tuple) else(c, None) for c in optctx.type.complete(ctx, incomplete)]
+        if not choices and hasattr(optctx, 'autocompletion') and optctx.autocompletion is not None:
+            dynamic_completions = optctx.autocompletion(ctx=ctx, args=args, incomplete=incomplete)
+            choices += [c if isinstance(c, tuple) else (c, None) for c in dynamic_completions]
     else:
         for param in ctx.command.get_params(ctx):
             if (completion_configuration.complete_options or incomplete and not incomplete[:1].isalnum()) and isinstance(param, Option):
