@@ -46,10 +46,6 @@ and in [examples/click-completion-callback](examples/click-completion-callback)
 `click-completion` obviously depends on `click`. `Jinja2` is used to
  generate the shell specific code.
 
-The shell currently used can be automatically detected when `psutil` is
-installed. When not installed, the functions that require the shell type
-are raising an exception if the shell type is not passed explicitly.
-
 And of course to make it useful, you'll need to use fish, Bash, Zsh or
 PowerShell.
 
