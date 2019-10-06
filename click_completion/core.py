@@ -114,6 +114,9 @@ def get_choices(cli, prog_name, args, incomplete):
     else:
         for param in ctx.command.get_params(ctx):
             if (completion_configuration.complete_options or incomplete and not incomplete[:1].isalnum()) and isinstance(param, Option):
+                # filter hidden click.Option
+                if getattr(param, 'hidden', False):
+                    continue
                 for opt in param.opts:
                     if match(opt, incomplete):
                         choices.append((opt, param.help))
