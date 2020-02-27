@@ -3,6 +3,7 @@
 
 from __future__ import print_function, absolute_import
 
+import copy
 import os
 import re
 import shlex
@@ -10,6 +11,7 @@ import subprocess
 
 import click
 from click import Option, Argument, MultiCommand, echo
+from click._bashcomplete import get_user_autocompletions, start_of_option, WORDBREAK, is_incomplete_option, is_incomplete_argument
 from enum import Enum
 
 from click_completion.lib import resolve_ctx, split_args, single_quote, double_quote, get_auto_shell
@@ -83,11 +85,35 @@ def get_choices(cli, prog_name, args, incomplete):
         A list of completion results. The first element of each tuple is actually the argument to complete, the second
         element is an help string for this argument.
     """
+    # Copy section from click._bashcomplete.get_choices()
+    all_args = copy.deepcopy(args)
+    # In newer versions of bash long opts with '='s are partitioned, but it's easier to parse
+    # without the '='
+    if start_of_option(incomplete) and WORDBREAK in incomplete:
+        partition_incomplete = incomplete.partition(WORDBREAK)
+        all_args.append(partition_incomplete[0])
+        incomplete = partition_incomplete[2]
+    elif incomplete == WORDBREAK:
+        incomplete = ''
+    # End of copy section from click._bashcomplete.get_choices()
+
     ctx = resolve_ctx(cli, prog_name, args)
     if ctx is None:
         return
+
+    # Copy section from click._bashcomplete.get_choices()
+    # completion for option values from user supplied values
+    for param in ctx.command.params:
+        if is_incomplete_option(all_args, param):
+            return get_user_autocompletions(ctx, all_args, incomplete, param)
+    # completion for argument values from user supplied values
+    for param in ctx.command.params:
+        if is_incomplete_argument(ctx.params, param):
+            return get_user_autocompletions(ctx, all_args, incomplete, param)
+    # End of section from click._bashcomplete.get_choices()
+    
     optctx = None
-    if args:
+    if all_args:
         options = [param
                    for param in ctx.command.get_params(ctx)
                    if isinstance(param, Option)]
@@ -95,7 +121,7 @@ def get_choices(cli, prog_name, args, incomplete):
                      for param in ctx.command.get_params(ctx)
                      if isinstance(param, Argument)]
         for param in options:
-            if not param.is_flag and args[-1] in param.opts + param.secondary_opts:
+            if not param.is_flag and all_args[-1] in param.opts + param.secondary_opts:
                 optctx = param
         if optctx is None:
             for param in arguments:
@@ -130,8 +156,7 @@ def get_choices(cli, prog_name, args, incomplete):
                 if match(name, incomplete):
                     choices.append((name, ctx.command.get_command_short_help(ctx, name)))
 
-    for item, help in choices:
-        yield (item, help)
+    return choices
 
 
 def do_bash_complete(cli, prog_name):
