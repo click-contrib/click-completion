@@ -345,7 +345,11 @@ def install(shell=None, prog_name=None, env_name=None, path=None, append=None, e
         path = path or os.path.expanduser('~') + '/.bash_completion'
         mode = mode or 'a'
     elif shell == 'zsh':
-        path = path or os.path.expanduser('~') + '/.zshrc'
+        zdotdir = os.getenv('ZDOTDIR')
+        if zdotdir is None:
+            path = path or os.path.expanduser('~') + '/.zshrc'
+        else:
+            path = path or zdotdir + '/.zshrc'
         mode = mode or 'a'
     elif shell == 'powershell':
         subprocess.check_call(['powershell', 'Set-ExecutionPolicy Unrestricted -Scope CurrentUser'])
