@@ -308,7 +308,7 @@ def get_code(shell=None, prog_name=None, env_name=None, extra_env=None):
 
 
 class InstallConfiguration(object):
-    """A class to hold the installation configuration
+    """A class to hold the installation configuration for auto completion.
 
     Attributes
     ----------
