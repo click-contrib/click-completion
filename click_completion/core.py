@@ -445,7 +445,22 @@ def install(shell=None, prog_name=None, env_name=None, path=None, append=None, e
         If the provided Shell isn't supported.
     """
     install_config = InstallConfiguration(shell, prog_name, env_name, path, append, extra_env)
+    return install_from_config(install_config)
 
+
+def install_from_config(install_config):
+    """Install the auto completion from an InstallConfiguration object.
+
+    Parameters
+    ----------
+    install_config : InstallConfiguration
+        The object that holds the configuration with the auto completion settings.
+
+    Returns
+    -------
+    Tuple[str, str]
+        The current shell and the path the code completion was written to.
+    """
     d = os.path.dirname(install_config.path)
     if not os.path.exists(d):
         os.makedirs(d)
