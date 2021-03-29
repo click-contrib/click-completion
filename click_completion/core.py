@@ -439,43 +439,16 @@ def install(shell=None, prog_name=None, env_name=None, path=None, append=None, e
     click.ClickException
         If the provided Shell isn't supported.
     """
-    prog_name = prog_name or click.get_current_context().find_root().info_name
-    shell = shell or get_auto_shell()
-    if append is None and path is not None:
-        append = True
-    if append is not None:
-        mode = 'a' if append else 'w'
-    else:
-        mode = None
+    install_config = InstallConfiguration(shell, prog_name, env_name, path, append, extra_env)
 
-    if shell == 'fish':
-        path = path or os.path.expanduser('~') + '/.config/fish/completions/%s.fish' % prog_name
-        mode = mode or 'w'
-    elif shell == 'bash':
-        path = path or os.path.expanduser('~') + '/.bash_completion'
-        mode = mode or 'a'
-    elif shell == 'zsh':
-        path = path or os.path.expanduser('~') + '/.zshrc'
-        mode = mode or 'a'
-    elif shell == 'powershell':
-        subprocess.check_call(['powershell', 'Set-ExecutionPolicy Unrestricted -Scope CurrentUser'])
-        path = path or subprocess.check_output(['powershell', '-NoProfile', 'echo $profile']).strip() if install else ''
-        mode = mode or 'a'
-    else:
-        raise click.ClickException('%s is not supported.' % shell)
-
-    if append is not None:
-        mode = 'a' if append else 'w'
-    else:
-        mode = mode
-    d = os.path.dirname(path)
+    d = os.path.dirname(install_config.path)
     if not os.path.exists(d):
         os.makedirs(d)
-    f = open(path, mode)
-    f.write(get_code(shell, prog_name, env_name, extra_env))
+    f = open(install_config.path, install_config.mode)
+    f.write(install_config.code)
     f.write("\n")
     f.close()
-    return shell, path
+    return install_config.shell, install_config.path
 
 
 class Shell(Enum):
