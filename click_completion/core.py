@@ -434,6 +434,11 @@ def install(shell=None, prog_name=None, env_name=None, path=None, append=None, e
     extra_env : dict
         A set of environment variables and their values to be added to the generated code (Default value = None)
 
+    Returns
+    -------
+    Tuple[str, str]
+        The current shell and the path the code completion was written to.
+
     Raises
     -------
     click.ClickException
