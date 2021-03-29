@@ -328,6 +328,11 @@ def install(shell=None, prog_name=None, env_name=None, path=None, append=None, e
         (Default value = None)
     extra_env : dict
         A set of environment variables and their values to be added to the generated code (Default value = None)
+
+    Raises
+    -------
+    click.ClickException
+        If the provided Shell isn't supported.
     """
     prog_name = prog_name or click.get_current_context().find_root().info_name
     shell = shell or get_auto_shell()
