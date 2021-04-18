@@ -1,11 +1,13 @@
 _{{prog_name}}_completion() {
     local IFS=$'\t'
+    _get_comp_words_by_ref -n : -w words -i cword
     COMPREPLY=( $( env COMP_WORDS="${COMP_WORDS[*]}" \
-                   COMP_CWORD=$COMP_CWORD \
+                   COMP_CWORD=$cword \
 {%- for k, v in extra_env.items() %}
                    {{k}}={{v}} \
 {%- endfor %}
                    {{complete_var}}=complete-bash $1 ) )
+    __ltrim_colon_completions "${words[cword]}"
     return 0
 }
 
