@@ -1,7 +1,7 @@
 _{{prog_name}}_completion() {
     local IFS=$'\t'
     _get_comp_words_by_ref -n : -w words -i cword
-    COMPREPLY=( $( env COMP_WORDS="${COMP_WORDS[*]}" \
+    COMPREPLY=( $( env COMP_WORDS="${words[*]}" \
                    COMP_CWORD=$cword \
 {%- for k, v in extra_env.items() %}
                    {{k}}={{v}} \
