@@ -3,6 +3,7 @@
 
 from __future__ import print_function, absolute_import
 
+import distutils
 import os
 import re
 import shlex
@@ -303,7 +304,15 @@ def get_code(shell=None, prog_name=None, env_name=None, extra_env=None):
     env_name = env_name or '_%s_COMPLETE' % prog_name.upper().replace('-', '_')
     extra_env = extra_env if extra_env else {}
     env = Environment(loader=FileSystemLoader(os.path.dirname(__file__)))
-    template = env.get_template('%s.j2' % shell.name)
+
+    click_ver = distutils.version.StrictVersion(click.__version__)
+    click8_ver = distutils.version.StrictVersion('8.0.0')
+    if click_ver >= click8_ver:
+        template_name = '%s-click8.j2'
+    else:
+        template_name = '%s.j2'
+    template = env.get_template(template_name % shell.name)
+
     return template.render(prog_name=prog_name, complete_var=env_name, extra_env=extra_env)
 
 
