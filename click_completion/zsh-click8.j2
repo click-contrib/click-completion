@@ -1,0 +1,7 @@
+#compdef {{prog_name}}
+_{{prog_name}}() {
+  eval "$(_{{prog_name.upper()}}_COMPLETE=zsh_source {{prog_name}})"
+}
+if [[ "$(basename -- ${(%):-%x})" != "_{{prog_name}}" ]]; then
+  compdef _{{prog_name}} {{prog_name}}
+fi
