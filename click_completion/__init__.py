@@ -8,8 +8,8 @@ import six
 from click import ParamType
 from enum import Enum
 
-from click_completion.core import completion_configuration, get_code, install, shells, resolve_ctx, get_choices, \
-    startswith, Shell
+from click_completion.core import completion_configuration, get_code, InstallConfiguration, install, \
+    install_from_config, shells, resolve_ctx, get_choices, startswith, Shell
 from click_completion.lib import get_auto_shell
 from click_completion.patch import patch as _patch
 
