@@ -3,7 +3,7 @@
 
 from __future__ import print_function, absolute_import
 
-import distutils
+import distutils.version
 import os
 import re
 import shlex
