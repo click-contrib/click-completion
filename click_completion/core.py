@@ -26,7 +26,7 @@ def startswith(string, incomplete):
     string : str
         The string to check
     incomplete : str
-        The incomplete string to compare to the begining of string
+        The incomplete string to compare to the beginning of string
 
     Returns
     -------
@@ -43,7 +43,7 @@ class CompletionConfiguration(object):
     ----------
 
     complete_options : bool
-        Wether to complete the options or not. By default, the options are only completed after the user has entered
+        Whether to complete the options or not. By default, the options are only completed after the user has entered
         a first dash '-'. Change this value to True to always complete the options, even without first typing any
         character.
     match_incomplete : func
