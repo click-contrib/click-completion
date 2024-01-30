@@ -1,6 +1,9 @@
 # click-completion
 Enhanced completion for Click
 
+> [!WARNING]
+> This project is in maintenance mode only. No new features will be added.
+
 Add automatic completion support for [fish], [Zsh], [Bash] and
 [PowerShell] to [Click].
 
@@ -9,6 +12,13 @@ arguments and options defined with click. In addition, fish and Zsh are
 also displaying the options and commands help during the completion.
 
 [![asciicast](https://asciinema.org/a/74sjdBLPwkzq3BUVgyS7f63DO.png)](https://asciinema.org/a/74sjdBLPwkzq3BUVgyS7f63DO?speed=2&loop=1&autoplay=1)
+
+## Click 8 native completion
+
+Everyone using click 8.0 or later should use the native completion that was
+introduced in this version.
+
+This project is only for click before 8.0.
 
 ## Activation
 
