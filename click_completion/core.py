@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-from __future__ import print_function, absolute_import
-
 import distutils.version
 import os
 import re
@@ -36,7 +34,7 @@ def startswith(string, incomplete):
     return string.startswith(incomplete)
 
 
-class CompletionConfiguration(object):
+class CompletionConfiguration:
     """A class to hold the completion configuration
 
     Attributes
