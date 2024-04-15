@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-from __future__ import print_function, absolute_import
-
-import six
-
 from click import ParamType
 from enum import Enum
 
@@ -85,4 +81,4 @@ class DocumentedChoice(ParamType):
 
     def complete(self, ctx, incomplete):
         match = completion_configuration.match_incomplete
-        return [(c, v) for c, v in six.iteritems(self.choices) if match(c, incomplete)]
+        return [(c, v) for c, v in self.choices.items() if match(c, incomplete)]

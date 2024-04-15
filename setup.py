@@ -25,8 +25,6 @@ setup(
     install_requires=[
         'click',
         'jinja2',
-        'six',
         'shellingham',
-        'enum34; python_version<"3"',
     ],
 )
